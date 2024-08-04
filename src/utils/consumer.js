@@ -11,7 +11,11 @@ const consumerForLocationUpdate=async (channel)=>{
             // const payload=JSON.parse(data.content)
             // console.log(payload)
             const payload=JSON.parse(data.content.toString())
-            updateLocationRiderInDB(payload)
+            const type=payload.type
+            const longitude=parseFloat(payload.longitude)
+            const latitude=parseFloat(payload.latitude)
+            const ridderId=payload.ridderId
+            updateLocationRiderInDB(type,longitude,latitude,ridderId)
             channel.ack(data);
         })
     } catch (error) {

@@ -4,22 +4,15 @@ const {setAutoLocation,
       setUserSocketId
     }=require('../redis/setData')
 
-const updateLocationRiderInDB=async(payload)=>{
-    const type=payload.type
-    switch (type) {
-        case 'auto':
-            console.log("auto")
-            setAutoLocation(payload)
-            break;
-        case 'moto':
-            setMotoLocation(payload)
-            break;
-        case 'go':
-            setCarLocation(payload)
-            break;
-        default:
-            break;
+const updateLocationRiderInDB=async(type,longitude,latitude,ridderId)=>{
+    if(type=='auto'){
+        await setAutoLocation(type,longitude,latitude,ridderId)
+    }else if(type=='moto'){
+        await setMotoLocation(type,longitude,latitude,ridderId)
+    }else{
+        await setCarLocation(type,longitude,latitude,ridderId)
     }
 }
+
 
 module.exports=updateLocationRiderInDB

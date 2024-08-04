@@ -1,5 +1,4 @@
-require('dotenv').config()
-const { createClient }=require('redis');
+const { createClient } = require('redis');
 const redis_client = createClient({
     password: 'D12mjOuXAfynmJn16mSq1Y3RBwl8P6wl',
     socket: {

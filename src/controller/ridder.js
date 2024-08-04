@@ -6,7 +6,7 @@ async function registerRidder(req,res){
             email:req.body.email,
             contactNumber:parseInt(req.body.contactNumber),
             password:req.body.password,
-            ridderType
+            ridderType:req.body.ridderType
         }
         const response=await RidderService.signUp(payload)
         return res.status(response.status).json(response)
@@ -59,7 +59,15 @@ async function updateLocation(req,res){
 async function activateRidder(req,res){
     try {
         const ridderId=req.params.id
-        const response=await RidderService.activateRidder(ridderId)
+        const {longitude,latitude}=req.body
+        const type=req.query.type
+        const payload={
+            longitude:parseFloat(longitude),
+            latitude:parseFloat(latitude),
+            ridderId,
+            type
+        }
+        const response=await RidderService.activateRidder(payload)
         return res.status(response.status).json(response)
     } catch (error) {
         return res.status(500).json({
@@ -75,7 +83,15 @@ async function activateRidder(req,res){
 async function deActivateUser(req,res){
     try {
         const ridderId=req.params.id
-        const response=await RidderService.deactivateRidder(ridderId)
+        const {longitude,latitude}=req.body
+        const type=req.query.type
+        const payload={
+            longitude:parseFloat(longitude),
+            latitude:parseFloat(latitude),
+            ridderId,
+            type
+        }
+        const response=await RidderService.deactivateRidder(payload)
         return res.status(response.status).json(response)   
     } catch (error) {
         return res.status(500).json({

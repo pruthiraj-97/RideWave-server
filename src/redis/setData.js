@@ -1,20 +1,51 @@
 const redis_client=require('../config/redis')
-const io=require('../index')
-const setAutoLocation=async (payload)=>{
-    //await redis_client.geoAdd('auto_Location',payload.latitude,payload.longitude,payload.id)
-    //io.emit('ridder_Location',payload)
-    console.log(payload)
+const { io }=require('../utils/socketConnection')
+const setAutoLocation=async (type,longitude,latitude,ridderId)=>{
+    const data=await redis_client.geoAdd('auto_Location',{
+        longitude:longitude,
+        latitude: latitude,
+        member: ridderId
+    })
+    console.log(data)
+    const payload={
+        id:ridderId,
+        longitude:longitude,
+        latitude:latitude,
+        type:type
+    }
+    io.emit('ridder_Location',payload)
 }
 
-const setMotoLocation=async (payload)=>{
-    //await redis_client.geoAdd('moto_Location',payload.id,payload.latitude,payload.longitude)
-    //io.emit('ridder_Location',payload)
-    console.log(payload)
-}
-const setCarLocation=async (payload)=>{
-//    await redis_client.geoAdd('go_Location',payload.id,payload.latitude,payload.longitude)
-//    io.emit('ridder_Location',payload)
-console.log(payload)
+const setMotoLocation=async (type,longitude,latitude,ridderId)=>{
+    const data=await redis_client.geoAdd('moto_Location',{
+        longitude:longitude,
+        latitude: latitude,
+        member: ridderId
+    })
+    console.log(data)
+    const payload={
+        id:ridderId,
+        longitude:longitude,
+        latitude:latitude,
+        type:type
+    }
+   io.emit('ridder_Location',payload)
+} 
+const setCarLocation=async (type,longitude,latitude,ridderId)=>{
+    const data=await redis_client.geoAdd('go_Location',{
+        longitude:longitude,
+        latitude: latitude,
+        member: ridderId
+    })
+    console.log(data)
+    const payload={
+        id:ridderId,
+        longitude:longitude,
+        latitude:latitude,
+        type:type
+    }
+   io.emit('ridder_Location',payload)
+   
 }
 
 const setUserSocketId=async (socketId,userId)=>{
