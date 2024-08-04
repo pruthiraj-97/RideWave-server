@@ -2,9 +2,10 @@ const RidderRepository=require('../repository/rider')
 const bcryptjs=require('bcryptjs')
 const JWT=require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
-const {producerForLocationUpdate}=require('../utils/producer')
+const { producerForLocationUpdate }=require('../utils/producer')
 const updateLocationRiderInDB=require('../utils/ridderLocationUpdate')
 const removeRidderFromDB=require('../utils/removeRidder')
+const { setRidderActivate }=require('../redis/setData')
 class RidderService{
      async signUp(data){
          let isRidderExist=await RidderRepository.findByEmail(data.email)
@@ -88,6 +89,7 @@ class RidderService{
     }
     async activateRidder(data){
         await RidderRepository.activate(data.ridderId)
+        await setRidderActivate(data.ridderId)
         await updateLocationRiderInDB(data.type,data.longitude,data.latitude,data.ridderId)
         return {
             status:200,

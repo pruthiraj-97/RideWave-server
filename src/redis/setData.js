@@ -6,7 +6,7 @@ const setAutoLocation=async (type,longitude,latitude,ridderId)=>{
         latitude: latitude,
         member: ridderId
     })
-    console.log(data)
+    
     const payload={
         id:ridderId,
         longitude:longitude,
@@ -53,9 +53,14 @@ const setUserSocketId=async (socketId,userId)=>{
     console.log(payload)
 }
 
+const setRidderActivate=async (ridderId)=>{
+    const result=await redis_client.sAdd('active_riders',ridderId)
+}
+
 module.exports={
     setAutoLocation,
     setMotoLocation,
     setCarLocation,
-    setUserSocketId
+    setUserSocketId,
+    setRidderActivate
 }

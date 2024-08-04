@@ -1,4 +1,5 @@
 const { RidderService }=require('../service/index')
+const {isRiderActivate}=require('../redis/getData')
 async function registerRidder(req,res){
     try {
         const payload={
@@ -47,6 +48,16 @@ async function updateLocation(req,res){
             latitude:parseFloat(latitude),
             longitude:parseFloat(longitude),
             ridderId
+        }
+        const isActive=await isRiderActivate(ridderId)
+        if(!isActive){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:"ridder is not active"
+                }
+            })
         }
         const channel =req.app.get('rabbitmq_channel');
         const response=await RidderService.updateLocation(channel,payload)

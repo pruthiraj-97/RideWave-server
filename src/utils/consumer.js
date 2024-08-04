@@ -8,8 +8,6 @@ const consumerForLocationUpdate=async (channel)=>{
         const applicationQueue=await channel.assertQueue(LOCATION_QUEUE);
         channel.bindQueue(applicationQueue.queue,MESSAGE_EXCHANGER,BINDING_KEY_LOCATION)
         channel.consume(applicationQueue.queue,(data)=>{
-            // const payload=JSON.parse(data.content)
-            // console.log(payload)
             const payload=JSON.parse(data.content.toString())
             const type=payload.type
             const longitude=parseFloat(payload.longitude)
