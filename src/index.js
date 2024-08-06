@@ -3,7 +3,7 @@ const {server,app}=require('./utils/socketConnection')
 const redis_client= require('./config/redis');
 const createChannel=require('./config/rabbitMQ')
 const connectDB=require('./config/database')
-const { consumerForLocationUpdate }=require('./utils/consumer')
+const { consumerForLocationUpdate,consumeForRideConfirmation }=require('./utils/consumer')
 const {authRouter,ridderRouter,rideRouter,userRideRouter}=require('./routes/index')
 require('dotenv').config()
 const PORT=process.env.PORT
@@ -25,6 +25,7 @@ const initializeRabbitmq=async ()=>{
         const channel=await createChannel()
         app.set('rabbitmq_channel',channel)
         await consumerForLocationUpdate(channel)
+        await consumeForRideConfirmation(channel)
     } catch (error) {
         console.log(error)
     }

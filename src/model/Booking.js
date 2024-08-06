@@ -6,13 +6,17 @@ const bookingSchema=mongoose.Schema({
      },
      ridderId:{
          type:mongoose.Types.ObjectId,
-         ref:"ridder",
-         required:true
+         ref:"ridder"
      },
      userId:{
         type:mongoose.Types.ObjectId,
         ref:"user",
-        required:true
+        default:null
+     },
+     rideType:{
+        type:String,
+        enum:['auto','moto','go'],
+        require:true
      },
      payment:{
          type:Number,
@@ -32,10 +36,6 @@ const bookingSchema=mongoose.Schema({
             type: [Number],
             required: true
         },
-        address: {
-            type: String,
-            required: true
-        }
     },
     dropOutLocation:{
         type: {
@@ -45,10 +45,6 @@ const bookingSchema=mongoose.Schema({
         },
         coordinates: {
             type: [Number],
-            required: true
-        },
-        address: {
-            type: String,
             required: true
         }
     },

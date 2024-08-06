@@ -10,6 +10,23 @@ const producerForLocationUpdate=async (channel,payload)=>{
     }
 }
 
+const producerForRideConfirmation=async (channel,payload,newBooking)=>{
+    try {
+    const BINDING_KEY_RIDE=process.env.BINDING_KEY_RIDE
+    const MESSAGE_EXCHANGER=process.env.MESSAGE_EXCHANGER
+    const RIDE_QUEUE=process.env.RIDE_QUEUE 
+    await channel.assertQueue(RIDE_QUEUE)
+    const requiredData={
+        payload,
+        newBooking
+    }
+    channel.publish(MESSAGE_EXCHANGER,BINDING_KEY_RIDE,Buffer.from(JSON.stringify(requiredData)))
+    } catch (error) {
+        console.log("error in producer of ride confirmation")
+    }
+}
+
 module.exports={
-    producerForLocationUpdate
+    producerForLocationUpdate,
+    producerForRideConfirmation
 }
