@@ -24,7 +24,6 @@ const consumerForLocationUpdate=async (channel)=>{
     }
 }
 
-// queue for ride confirmation
 
 const consumeForRideConfirmation=async (channel)=>{
    const BINDING_KEY_RIDE=process.env.BINDING_KEY_RIDE

@@ -11,7 +11,7 @@ const confirmationRideToUser=async (newRide)=>{
 const sendRequestForRideDelay=async (userId)=>{
     const socketId=await getSocketId(userId)
     if(!socketId){
-        io.to(socketId).emit("cencelRide",{
+        io.to(socketId).emit(`rideRequestTimeout${userId}`,{
             message:"No response from riders please try again later"
         })
     }

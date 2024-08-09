@@ -5,7 +5,7 @@ const boardCastnewRide=async (payload,newBooking)=>{
         const socketId = await getSocketId(rider.riderId);
         // currently not presend when rider will connect or activate socket will store in the redis
         if(socketId){
-          io.to(socketId).emit(newBooking);
+          io.to(socketId).emit(`newride${rider.riderId}`,newBooking);
         }
     }));
 }

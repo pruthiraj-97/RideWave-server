@@ -58,4 +58,3 @@ class UserRideService{
 }
 
 module.exports=new UserRideService()
-//http://localhost:3005/api/userride/acceptride/66b0fdaa2071aadf9eb0a1b0?ridderId=66af40f8bf4bf4213560af4a
