@@ -1,7 +1,7 @@
 const JWT=require('jsonwebtoken')
 const isUserAuthenticate=async (req,res,next)=>{
     try {
-        const token=req.cookies.token
+        const token=req.cookies.JWT_TOKEN
         if(!token){
             return res.status(401).json({
                 status:401,

@@ -1,5 +1,7 @@
 const updateLocationRiderInDB=require('../utils/ridderLocationUpdate')
 const boardCastnewRide=require('./boardCastRideNotification')
+const BookingRepository=require('../repository/booking')
+const {sendRequestForRideDelay}=require('./sendConfimRideToUser')
 const consumerForLocationUpdate=async (channel)=>{
     try {
         const LOCATION_QUEUE=process.env.LOCATION_QUEUE
@@ -36,6 +38,14 @@ const consumeForRideConfirmation=async (channel)=>{
       const newBooking=requiredData.newBooking
       const payload=requiredData.payload
       boardCastnewRide(payload,newBooking)
+     setTimeout(async ()=>{
+         const checkRide=await BookingRepository.getById(newBooking._id)
+         const message=await BookingRepository.deleteBooking(newBooking._id)
+         console.log(message,newBooking._id)
+         if(!checkRide.ridderId){
+            await sendRequestForRideDelay(newBooking._id)
+         }
+     },1*60*1000)
       channel.ack(data)
    })
 }

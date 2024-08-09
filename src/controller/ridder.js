@@ -1,7 +1,19 @@
 const { RidderService }=require('../service/index')
 const {isRiderActivate}=require('../redis/getData')
+const {riderRegister,loginRider,isValideUpdateLocation}=require('../validateData/rider.validation')
 async function registerRidder(req,res){
     try {
+        const {username,email,password,contactNumber,ridderType}=req.body
+        const isValidate=riderRegister(username,email,password,contactNumber,ridderType)
+        if(!isValidate.success){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:isValidate.error
+                }
+            })
+        }
         const payload={
             username:req.body.username,
             email:req.body.email,
@@ -25,6 +37,16 @@ async function registerRidder(req,res){
 async function loginRidder(req,res){
      try {
         const {email,password}=req.body
+        const isValidate=loginRider(email,password)
+        if(!isValidate.success){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:isValidate.error
+                }
+            })
+        }
         const response=await RidderService.login({email,password},res)
      return res.status(response.status).json(response)
      } catch (error) {
@@ -43,6 +65,16 @@ async function updateLocation(req,res){
         const ridderId=req.params.id
         const { type } = req.query;
         const { latitude, longitude } = req.body;
+        const isValidate=isValideUpdateLocation(latitude,longitude,ridderId,type)
+        if(!isValidate.success){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:isValidate.error
+                }
+            })
+        }
         const payload={
             type:type.toLowerCase(),
             latitude:parseFloat(latitude),
@@ -63,7 +95,13 @@ async function updateLocation(req,res){
         const response=await RidderService.updateLocation(channel,payload)
         return res.status(response.status).json(response)
     } catch (error) {
-        
+        return res.status(500).json({
+            status:500,
+            data:{},
+            err:{
+                message:"some thing went wrong"+error
+            }
+        })
     }
 }
 
@@ -94,11 +132,8 @@ async function activateRidder(req,res){
 async function deActivateUser(req,res){
     try {
         const ridderId=req.params.id
-        const {longitude,latitude}=req.body
         const type=req.query.type
         const payload={
-            longitude:parseFloat(longitude),
-            latitude:parseFloat(latitude),
             ridderId,
             type
         }

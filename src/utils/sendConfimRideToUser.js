@@ -8,6 +8,16 @@ const confirmationRideToUser=async (newRide)=>{
    else io.to(socketId).emit(newRide)
 }
 
+const sendRequestForRideDelay=async (userId)=>{
+    const socketId=await getSocketId(userId)
+    if(!socketId){
+        io.to(socketId).emit("cencelRide",{
+            message:"No response from riders please try again later"
+        })
+    }
+}
+
 module.exports={
-    confirmationRideToUser
+    confirmationRideToUser,
+    sendRequestForRideDelay
 }

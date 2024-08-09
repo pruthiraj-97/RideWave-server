@@ -1,25 +1,24 @@
 const { AuthService }=require('../service/index')
-const { sigupValidate,loginValidation }=require('../zod/auth.validation')
-const {ExtractError}=require('../utils/validationError')
+const { sigupValidate,loginValidation }=require('../validateData/auth.validation')
+const {signUp,login}=require('../validateData/auth.validation')
 async function signUp(req,res){
     try {
+        const {email,password,username,contactNumber}=req.body
+        const message=signUp(email,password,username,contactNumber)
+        if(!message.success){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:message.error
+                }
+            })
+        }
         const payload={
             email:req.body.email,
             password:req.body.password,
             username:req.body.username,
             contactNumber:parseInt(req.body.contactNumber)
-        }
-        const isValidate=sigupValidate.parse(payload)
-        console.log(isValidate)
-        if(!isValidate.success){
-            const message=ExtractError(isValidate.error)
-            return res.status(400).json({
-                status:400,
-                data:{},
-                err:{
-                    message // array of error
-                }
-            })
         }
         const response=await AuthService.signUp(payload)
         return res.status(response.status).json(response)
@@ -37,17 +36,16 @@ async function signUp(req,res){
 async function login(req,res) {
     try {
         const {email,password}=req.body
-        // const isValiddata=loginValidation.parse({email,password})
-        // if(!isValiddata.success){
-        //    const message=ExtractError(isValiddata.error)
-        //     return res.status(400).json({
-        //         status:400,
-        //         data:{},
-        //         err:{
-        //             message
-        //         }
-        //     })
-        // }
+        const isValidate=login(email,password)
+        if(!isValidate.success){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:isValidate.error
+                }
+            })
+        }
       const message=await AuthService.login(req.body,res)
       return res.status(message.status).json(message)
 
@@ -62,9 +60,6 @@ async function login(req,res) {
     }
 }
 
-async function activateRider(req,res){
-    
-}
 
 module.exports={
     signUp,

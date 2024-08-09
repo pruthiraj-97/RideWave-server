@@ -49,6 +49,10 @@ class BookingRepository{
                                          })
         return newRide
     }
+    async deleteBooking(id){
+        const deleted=await BookingSchema.deleteOne({_id:id})
+        return deleted
+    }
 }
 
 module.exports= new BookingRepository()

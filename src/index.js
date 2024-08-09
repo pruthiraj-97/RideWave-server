@@ -1,13 +1,19 @@
 const express=require('express')
+const cors=require('cors')
 const {server,app}=require('./utils/socketConnection')
 const redis_client= require('./config/redis');
 const createChannel=require('./config/rabbitMQ')
 const connectDB=require('./config/database')
 const { consumerForLocationUpdate,consumeForRideConfirmation }=require('./utils/consumer')
 const {authRouter,ridderRouter,rideRouter,userRideRouter}=require('./routes/index')
+const cookieParser=require('cookie-parser')
 require('dotenv').config()
 const PORT=process.env.PORT
-
+app.use(cors({
+    origin:'*',
+    credentials:true
+}))
+app.use(cookieParser())
 app.use(express.json())
 app.use('/api/auth/user',authRouter)
 app.use('/api/auth/rider',ridderRouter)
