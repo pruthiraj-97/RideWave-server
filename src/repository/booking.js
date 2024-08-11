@@ -33,10 +33,11 @@ class BookingRepository{
             ridderId:ridderId
         }
        })
+       console.log("confirm in ",confirm)
        return confirm
     }
-    async getById(rideId){
-       const rideDetails=await BookingSchema.findOne({_id:rideId})
+    async getById(bookingId){
+       const rideDetails=await BookingSchema.findOne({_id:bookingId})
        return rideDetails
     }
 

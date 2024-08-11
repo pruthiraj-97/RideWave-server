@@ -1,34 +1,68 @@
-const {io}=require('../utils/socketConnection')
 const {getSocketId}=require('../redis/getData')
 const boardCastnewRide=async (payload,newBooking)=>{
-  // working fine
+  const { getIO } = require('../utils/socketConnection');
+  const io = getIO();
+     if(!io){
+      console.log("io is not initialized")
+      return 
+     }
+   
     await Promise.all(payload.map(async (rider) => {
         const socketId = await getSocketId(rider.riderId);
         console.log("socket id ",socketId)
-        if(socketId){
-          delete newBooking.otp
-          io.to(socketId).emit(`newride`,newBooking);
-        }
+        if (io && socketId) {
+          delete newBooking.otp;
+          io.to(socketId).emit(`newride`, newBooking);
+      }
     }));
 }
-
-// io not working
 function boardcastlocation(payload){
-   io.emit('rider_location',payload)
+  const { getIO } = require('../utils/socketConnection');
+ const io = getIO();
+
+if (!io) {
+  console.log("io is not initialized");
+} else {
+
+  console.log("socket connected")
+  io.emit('rider_location', payload);
+}
 }
 
-// io not working
-function trackRideLocation(payload){
+async function trackRideLocation(payload){
+  const { getIO } = require('../utils/socketConnection');
+  const io = getIO();
+  if(!io){
+    console.log("io is not initialized")
+    return 
+  }
     const riderId=payload.riderId
     const userId=payload.userId
-    const userSocket=getSocketId(userId)
-    const riderSocket=getSocketId(riderId)
+    const userSocket=await getSocketId(userId)
+    const riderSocket=await getSocketId(riderId)
     if(userSocket){
-      io.to(userSocket).emit(`TrackRide:${riderId}`,payload)
+      console.log("user socket ",userSocket)
+      io.to(userSocket).emit(`TrackRide:${payload.bookingId}`,payload)
     }
     if(riderSocket){
-      io.to(riderSocket).emit(`TrackRide:${userId}`,payload)
+      console.log("rider socket ",riderSocket)
+      io.to(riderSocket).emit(`TrackRide:${payload.bookingId}`,payload)
     }
 }
 
-module.exports={boardCastnewRide,boardcastlocation,trackRideLocation}
+async function sendRideCompletionMessage(userId){
+  const { getIO } = require('../utils/socketConnection');
+  const io = getIO();
+  if(!io){
+    console.log("io is not initialized")
+    return 
+  }
+  const socketId=await getSocketId(userId,bookingId)
+  if(socketId){
+    io.to(socketId).emit(`RideCompletion:${bookingId}`,{
+      message:"Your ride is completed , Thank you"
+    })
+  }
+}
+
+module.exports={boardCastnewRide,boardcastlocation,trackRideLocation,sendRideCompletionMessage}

@@ -32,6 +32,23 @@ class ridderRepository{
         })
         return deactivateRidder
     }
+    async updateRatting(ratting){
+        const result=await RidderSchema.updateOne({_id:ratting.ridderId},{
+            $set:{
+                ratting:ratting.ratting
+            }
+        })
+        return result
+    }
+
+    async updateTotalRides(riderId){
+        const result=await RidderSchema.updateMany({_id:riderId},{
+           $inc:{
+            ratting:1
+           }
+        })
+        return result
+    }
 }
 
 module.exports=new ridderRepository()

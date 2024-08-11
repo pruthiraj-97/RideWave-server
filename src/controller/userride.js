@@ -4,7 +4,7 @@ async function findRidderNear(req,res){
     try {
         const source=req.body.source
         const destination=req.body.destination
-        const type=req.query.type
+        const type=req.query.type || 'auto'
         console.log(source,destination,type)
         const midPoint=calculateMidpoint(source,destination)
         const distance=calculateDistance(midPoint,destination)
@@ -41,6 +41,7 @@ async function acceptRideFromRider(req,res){
    try {
    const bookingId=req.params.id
    const ridderId=req.payload.id
+   console.log(bookingId,ridderId)
    const response=await UserRideService.confirmationRequestFromRider(bookingId,ridderId)
    return res.status(response.status).json(response)
    } catch (error) {
@@ -61,12 +62,12 @@ async function trackRide(req,res){
         const {userId,riderId}=req.query
         const {longitude,latitude}=req.body
         const channel=req.app.get('rabbitmq_channel')
-        if(!longitude || !latitude){
+        if(!longitude || !latitude||!userId||!riderId||!bookingId){
             return res.status(400).json({
                 status:400,
                 data:null,
                 err:{
-                    message:"please provide longitude and latitude"
+                    message:"please provide all credentials"
                 }
             })
         }
@@ -77,8 +78,8 @@ async function trackRide(req,res){
             userId,
             riderId
         }
-        const response=await UserRideService.trackRide(channel,payload)
-        return res.status(response.status).json(response)
+       const response=await UserRideService.trackRide(channel,payload)
+       return res.status(response.status).json(response)
     } catch (error) {
         return res.status(500).json({
             status:500,
@@ -93,7 +94,8 @@ async function trackRide(req,res){
 async function startRide(req,res){
      try {
         const bookingId=req.params.id
-        const {otp}=req.body
+        let {otp}=req.body
+        console.log(otp,bookingId)
         if(!otp){
             return res.status(400).json({
                 status:400,
@@ -104,6 +106,7 @@ async function startRide(req,res){
 
             })
         }
+        otp=parseInt(otp)
         const response=await UserRideService.startRide(otp,bookingId)
         return res.status(response.status).json(response)
      } catch (error) {
@@ -117,10 +120,63 @@ async function startRide(req,res){
      }
 }
 
+async function completeRide(req,res){
+    try {
+         const bookingId=req.params.id
+         const {longitude,latitude}=req.body
+         if(!longitude || !latitude||!bookingId){
+             return res.status(400).json({
+                 status:400,
+                 data:null,
+                 err:{
+                     message:"please provide all credentials"
+                 }
+             })
+         }
+         const payload={
+             longitude:parseFloat(longitude),
+             latitude:parseFloat(latitude),
+             bookingId
+         }
+         const response=await UserRideService.completeRide(payload)
+         return res.status(response.status).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            status:500,
+            data:null,
+            err:{
+                message:"some think went wrong"+error
+            }
+        })
+    }
+}
+
+async function gaveReviewToRider(req,res) {
+    try {
+        const bookingId=req.params.id
+        const userId=req.payload.id
+        const {rating}=req.body
+        if(!rating){
+            return res.status(400).json({
+                status:400,
+                data:null,
+                err:{
+                    message:"please provide some ratting"
+                }
+            })
+        }
+
+    } catch (error) {
+        
+    }
+}
+
 module.exports={
     findRidderNear,
     connectRider,
     acceptRideFromRider,
     startRide,
-    trackRide
+    trackRide,
+    completeRide,
+    gaveReviewToRider
 }

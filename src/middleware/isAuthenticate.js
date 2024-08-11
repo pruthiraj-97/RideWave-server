@@ -2,7 +2,6 @@ const JWT=require('jsonwebtoken')
 const isUserAuthenticate=async (req,res,next)=>{
     try {
         const token=req.cookies.JWT_TOKEN
-        console.log("token",token)
         if(!token){
             return res.status(401).json({
                 status:401,
@@ -41,7 +40,7 @@ const isRider=(req,res,next)=>{
         const payload=req.payload
         console.log(payload)
         if(payload.type!="rider"){
-            return res.status(401).json({
+            return res.status(403).json({
                 status:402,
                 data:null,
                 err:{
@@ -49,6 +48,7 @@ const isRider=(req,res,next)=>{
                 }
             })
         }
+        next()
     } catch (error) {
         return res.status(500).json({
             status:500,
