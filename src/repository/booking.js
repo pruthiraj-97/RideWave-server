@@ -35,7 +35,6 @@ class BookingRepository{
        })
        return confirm
     }
-    // through this i can compute all the this that is present or not
     async getById(rideId){
        const rideDetails=await BookingSchema.findOne({_id:rideId})
        return rideDetails
@@ -52,6 +51,14 @@ class BookingRepository{
     async deleteBooking(id){
         const deleted=await BookingSchema.deleteOne({_id:id})
         return deleted
+    }
+    async activateRide(bookingId){
+        const result=await BookingSchema.updateOne({_id:bookingId},{
+            $set:{
+                status:'active'
+            }
+        })
+        return result
     }
 }
 

@@ -1,6 +1,7 @@
 const { RidderService }=require('../service/index')
 const {isRiderActivate}=require('../redis/getData')
 const {riderRegister,loginRider,isValideUpdateLocation}=require('../validateData/rider.validation')
+const {UserRideService}=require('../service/index')
 async function registerRidder(req,res){
     try {
         const {username,email,password,contactNumber,ridderType}=req.body
@@ -81,6 +82,7 @@ async function updateLocation(req,res){
             longitude:parseFloat(longitude),
             ridderId
         }
+        // update for only activate rider
         const isActive=await isRiderActivate(ridderId)
         if(!isActive){
             return res.status(400).json({
@@ -150,10 +152,37 @@ async function deActivateUser(req,res){
     }
 }
 
+async function startRide(req,res){
+    try {
+       const bookingId=req.params.id
+       const {otp}=req.body
+       if(!otp){
+           return res.status(400).json({
+               status:400,
+               data:{},
+               err:{
+                   message:"Otp not found"
+               }
+
+           })
+       }
+       const response=await UserRideService.startRide(otp,bookingId)
+       return res.status(response.status).json(response)
+    } catch (error) {
+       return res.status(500).json({
+           status:500,
+           data:null,
+           err:{
+               message:"some think went wrong"+error
+           }
+       })
+    }
+}
 module.exports={
     registerRidder,
     loginRidder,
     updateLocation,
     activateRidder,
-    deActivateUser
+    deActivateUser,
+    startRide
 }

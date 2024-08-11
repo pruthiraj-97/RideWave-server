@@ -1,4 +1,4 @@
-const { io }=require('../utils/socketConnection')
+const {io}=require('../utils/socketConnection')
 const { getSocketId }=require('../redis/getData')
 const confirmationRideToUser=async (newRide)=>{
    const userId=(newRide.userId).toString()

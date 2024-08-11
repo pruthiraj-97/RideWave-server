@@ -1,4 +1,4 @@
-const signUp=(email,password,username,contactNumber)=>{
+const signUpValidate=(email,password,username,contactNumber)=>{
     if(!email || !password || !username || !contactNumber){
          return {
              success:false,
@@ -16,7 +16,7 @@ const signUp=(email,password,username,contactNumber)=>{
     }
 }
 
-const login=(email,password)=>{
+const loginValidate=(email,password)=>{
     if(!email || !password){
         return {
             success:false,
@@ -31,6 +31,6 @@ const login=(email,password)=>{
 }
 
 module.exports={
-    signUp,
-    login
+    signUpValidate,
+    loginValidate
 }

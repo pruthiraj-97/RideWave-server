@@ -63,12 +63,12 @@ class RidderService{
         const payload={
             id:isUserExist._id,
             email:isUserExist.email,
-            username:isUserExist.username
+            username:isUserExist.username,
+            type:'rider'
         }
+        console.log(payload)
         const token=JWT.sign(payload,process.env.TOKEN_KEY,{expiresIn:'1d'})
-        res.cookie('token',token,{
-            httpOnly:true
-        })
+        res.cookie('JWT_TOKEN',token,{httpOnly:true})
         return {
             status:200,
             data:{

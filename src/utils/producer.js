@@ -26,7 +26,20 @@ const producerForRideConfirmation=async (channel,payload,newBooking)=>{
     }
 }
 
+const producerForRideTracking=(channel,payload)=>{
+      try {
+        const BINDING_KEY_TRACKING=process.env.BINDING_KEY_TRACKING
+        const MESSAGE_EXCHANGER=process.env.MESSAGE_EXCHANGER
+        const TRACKING_QUEUE=process.env.TRACKING_QUEUE
+        channel.assertQueue(TRACKING_QUEUE)
+        channel.publish(MESSAGE_EXCHANGER,BINDING_KEY_TRACKING,Buffer.from(JSON.stringify(payload)))
+      } catch (error) {
+        console.log("error in publishing the tracking update")
+      }
+}
+
 module.exports={
     producerForLocationUpdate,
-    producerForRideConfirmation
+    producerForRideConfirmation,
+    producerForRideTracking
 }

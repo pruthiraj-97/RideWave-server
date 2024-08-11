@@ -54,8 +54,73 @@ async function acceptRideFromRider(req,res){
    }
 }
 
+// it can be done only by rider location update
+async function trackRide(req,res){
+    try {
+        const bookingId=req.params.id
+        const {userId,riderId}=req.query
+        const {longitude,latitude}=req.body
+        const channel=req.app.get('rabbitmq_channel')
+        if(!longitude || !latitude){
+            return res.status(400).json({
+                status:400,
+                data:null,
+                err:{
+                    message:"please provide longitude and latitude"
+                }
+            })
+        }
+        const payload={
+            longitude:parseFloat(longitude),
+            latitude:parseFloat(latitude),
+            bookingId,
+            userId,
+            riderId
+        }
+        const response=await UserRideService.trackRide(channel,payload)
+        return res.status(response.status).json(response)
+    } catch (error) {
+        return res.status(500).json({
+            status:500,
+            data:null,
+            err:{
+                message:"some think went wrong"+error
+            }
+        })
+    }
+}
+
+async function startRide(req,res){
+     try {
+        const bookingId=req.params.id
+        const {otp}=req.body
+        if(!otp){
+            return res.status(400).json({
+                status:400,
+                data:{},
+                err:{
+                    message:"Otp not found"
+                }
+
+            })
+        }
+        const response=await UserRideService.startRide(otp,bookingId)
+        return res.status(response.status).json(response)
+     } catch (error) {
+        return res.status(500).json({
+            status:500,
+            data:null,
+            err:{
+                message:"some think went wrong"+error
+            }
+        })
+     }
+}
+
 module.exports={
     findRidderNear,
     connectRider,
-    acceptRideFromRider
+    acceptRideFromRider,
+    startRide,
+    trackRide
 }

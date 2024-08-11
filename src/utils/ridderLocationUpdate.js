@@ -15,4 +15,6 @@ const updateLocationRiderInDB=async(type,longitude,latitude,ridderId)=>{
 }
 
 
+
+
 module.exports=updateLocationRiderInDB

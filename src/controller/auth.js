@@ -1,10 +1,10 @@
 const { AuthService }=require('../service/index')
 const { sigupValidate,loginValidation }=require('../validateData/auth.validation')
-const {signUp,login}=require('../validateData/auth.validation')
+const {signUpValidate,loginValidate}=require('../validateData/auth.validation')
 async function signUp(req,res){
     try {
         const {email,password,username,contactNumber}=req.body
-        const message=signUp(email,password,username,contactNumber)
+        const message=signUpValidate(email,password,username,contactNumber)
         if(!message.success){
             return res.status(400).json({
                 status:400,
@@ -36,7 +36,7 @@ async function signUp(req,res){
 async function login(req,res) {
     try {
         const {email,password}=req.body
-        const isValidate=login(email,password)
+        const isValidate=loginValidate(email,password)
         if(!isValidate.success){
             return res.status(400).json({
                 status:400,

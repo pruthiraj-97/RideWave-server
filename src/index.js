@@ -41,4 +41,4 @@ server.listen(PORT,async ()=>{
     await redis_client.connect()
     await initializeRabbitmq()
     await connectDB()
-})//exporting io
+})

@@ -1,5 +1,6 @@
 const redis_client=require('../config/redis')
-const { io }=require('../utils/socketConnection')
+const {boardcastlocation}=require('../utils/boardCastRideNotification')
+// getting error
 const setAutoLocation=async (type,longitude,latitude,ridderId)=>{
     const data=await redis_client.geoAdd('auto_Location',{
         longitude:longitude,
@@ -13,7 +14,7 @@ const setAutoLocation=async (type,longitude,latitude,ridderId)=>{
         latitude:latitude,
         type:type
     }
-    io.emit('ridder_Location',payload)
+    boardcastlocation(payload)
 }
 
 const setMotoLocation=async (type,longitude,latitude,ridderId)=>{
@@ -29,7 +30,7 @@ const setMotoLocation=async (type,longitude,latitude,ridderId)=>{
         latitude:latitude,
         type:type
     }
-   io.emit('ridder_Location',payload)
+    boardcastlocation(payload)
 } 
 const setCarLocation=async (type,longitude,latitude,ridderId)=>{
     const data=await redis_client.geoAdd('go_Location',{
@@ -44,17 +45,24 @@ const setCarLocation=async (type,longitude,latitude,ridderId)=>{
         latitude:latitude,
         type:type
     }
-   io.emit('ridder_Location',payload)
-   
+    boardcastlocation(payload)
 }
 
 const setUserSocketId=async (socketId,userId)=>{
-    await redis_client.set(userId,socketId)
-    console.log(payload)
+    const result=await redis_client.set(userId,socketId)
+    console.log(result)
 }
 
 const setRidderActivate=async (ridderId)=>{
     const result=await redis_client.sAdd('active_riders',ridderId)
+}
+
+const trackRide=async (payload)=>{
+    const result=await redis_client.geoAdd(`TrackRide${payload.bookingId}`,{
+        longitude:parseFloat(payload.longitude),
+        latitude:parseFloat(payload.latitude),
+        member:payload.bookingId
+    })
 }
 
 module.exports={
@@ -62,5 +70,6 @@ module.exports={
     setMotoLocation,
     setCarLocation,
     setUserSocketId,
-    setRidderActivate
+    setRidderActivate,
+    trackRide
 }

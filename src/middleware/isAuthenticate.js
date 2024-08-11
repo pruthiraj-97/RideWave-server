@@ -2,6 +2,7 @@ const JWT=require('jsonwebtoken')
 const isUserAuthenticate=async (req,res,next)=>{
     try {
         const token=req.cookies.JWT_TOKEN
+        console.log("token",token)
         if(!token){
             return res.status(401).json({
                 status:401,
@@ -35,4 +36,28 @@ const isUserAuthenticate=async (req,res,next)=>{
     }
 }
 
-module.exports=isUserAuthenticate
+const isRider=(req,res,next)=>{
+    try {
+        const payload=req.payload
+        console.log(payload)
+        if(payload.type!="rider"){
+            return res.status(401).json({
+                status:402,
+                data:null,
+                err:{
+                    message:"you are not a rider"
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status:500,
+            data:null,
+            err:{
+                message:"some thing went wrong"+error
+            }
+        })
+    }
+}
+
+module.exports={isUserAuthenticate,isRider}

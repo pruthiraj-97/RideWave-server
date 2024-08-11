@@ -1,5 +1,5 @@
 const updateLocationRiderInDB=require('../utils/ridderLocationUpdate')
-const boardCastnewRide=require('./boardCastRideNotification')
+const {boardCastnewRide,boardcastlocation}=require('./boardCastRideNotification')
 const BookingRepository=require('../repository/booking')
 const {sendRequestForRideDelay}=require('./sendConfimRideToUser')
 const consumerForLocationUpdate=async (channel)=>{
@@ -10,13 +10,13 @@ const consumerForLocationUpdate=async (channel)=>{
 
         const applicationQueue=await channel.assertQueue(LOCATION_QUEUE);
         channel.bindQueue(applicationQueue.queue,MESSAGE_EXCHANGER,BINDING_KEY_LOCATION)
-        channel.consume(applicationQueue.queue,(data)=>{
+        channel.consume(applicationQueue.queue,async(data)=>{
             const payload=JSON.parse(data.content.toString())
             const type=payload.type
             const longitude=parseFloat(payload.longitude)
             const latitude=parseFloat(payload.latitude)
             const ridderId=payload.ridderId
-            updateLocationRiderInDB(type,longitude,latitude,ridderId)
+            await updateLocationRiderInDB(type,longitude,latitude,ridderId)
             channel.ack(data);
         })
     } catch (error) {
@@ -37,6 +37,7 @@ const consumeForRideConfirmation=async (channel)=>{
       const newBooking=requiredData.newBooking
       const payload=requiredData.payload
       boardCastnewRide(payload,newBooking)
+    
      setTimeout(async ()=>{
          const checkRide=await BookingRepository.getById(newBooking._id)
          const message=await BookingRepository.deleteBooking(newBooking._id)
@@ -44,12 +45,24 @@ const consumeForRideConfirmation=async (channel)=>{
          if(!checkRide.ridderId){
             await sendRequestForRideDelay(newBooking._id)
          }
-     },1*60*1000)
+     },1*60*10000)
       channel.ack(data)
    })
 }
 
+const consumeForTrackingRide=async (channel)=>{
+    const TRACKING_QUEUE=process.env.TRACKING_QUEUE
+    const MESSAGE_EXCHANGER=process.env.MESSAGE_EXCHANGER
+    const BINDING_KEY_TRACKING=process.env.BINDING_KEY_TRACKING
+    const applicationQueue=channel.assertQueue(TRACKING_QUEUE)
+    channel.bindQueue(applicationQueue.queue,MESSAGE_EXCHANGER,BINDING_KEY_TRACKING)
+    channel.consume(applicationQueue.queue,(data)=>{
+        console.log(data)
+    })
+}
+
 module.exports={
     consumerForLocationUpdate,
-    consumeForRideConfirmation
+    consumeForRideConfirmation,
+    consumeForTrackingRide
 }

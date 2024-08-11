@@ -59,7 +59,8 @@ class AuthService{
         const payload={
             id:isUserExist._id,
             email:isUserExist.email,
-            username:isUserExist.username
+            username:isUserExist.username,
+            type:'user'
         }
         const token=JWT.sign(payload,process.env.TOKEN_KEY,{expiresIn:'1d'})
         res.cookie('JWT_TOKEN',token,{httpOnly:true})

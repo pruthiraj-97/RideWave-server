@@ -1,5 +1,5 @@
 const { getRidders }=require('../redis/getData')
-const { producerForRideConfirmation }=require('../utils/producer')
+const { producerForRideConfirmation,producerForRideTracking }=require('../utils/producer')
 const BookingRepository=require('../repository/booking')
 const { paymentForRide }=require('../utils/calculatePayment')
 const { generateotp }=require('../utils/generateOTP')
@@ -55,6 +55,39 @@ class UserRideService{
             err:null
         }
     }
+
+    async startRide(otp,bookingId){
+        const booking=await BookingRepository.getById(bookingId)
+        if(booking.otp!=otp){
+            return {
+                status:400,
+                data:{},
+                err:{
+                    message:"OTP not match try again"
+                }
+            }
+        }
+        await  BookingRepository.activateRide(bookingId)
+        return {
+            status:200,
+            data:{
+                message:"Ride started"
+            },
+            err:{}
+        }
+    }
+
+    async trackRide(channel,payload){
+        await producerForRideTracking.bind(channel,payload)
+        return {
+            status:200,
+            data:{
+                message:"Track succesfully"
+            },
+            err:null
+        }
+    }
+
 }
 
 module.exports=new UserRideService()

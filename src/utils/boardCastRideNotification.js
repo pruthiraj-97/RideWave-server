@@ -1,13 +1,34 @@
-const { getSocketId }=require('../redis/getData')
-const { io }=require('../utils/socketConnection')
+const {io}=require('../utils/socketConnection')
+const {getSocketId}=require('../redis/getData')
 const boardCastnewRide=async (payload,newBooking)=>{
+  // working fine
     await Promise.all(payload.map(async (rider) => {
         const socketId = await getSocketId(rider.riderId);
-        // currently not presend when rider will connect or activate socket will store in the redis
+        console.log("socket id ",socketId)
         if(socketId){
-          io.to(socketId).emit(`newride${rider.riderId}`,newBooking);
+          delete newBooking.otp
+          io.to(socketId).emit(`newride`,newBooking);
         }
     }));
 }
 
-module.exports=boardCastnewRide
+// io not working
+function boardcastlocation(payload){
+   io.emit('rider_location',payload)
+}
+
+// io not working
+function trackRideLocation(payload){
+    const riderId=payload.riderId
+    const userId=payload.userId
+    const userSocket=getSocketId(userId)
+    const riderSocket=getSocketId(riderId)
+    if(userSocket){
+      io.to(userSocket).emit(`TrackRide:${riderId}`,payload)
+    }
+    if(riderSocket){
+      io.to(riderSocket).emit(`TrackRide:${userId}`,payload)
+    }
+}
+
+module.exports={boardCastnewRide,boardcastlocation,trackRideLocation}
