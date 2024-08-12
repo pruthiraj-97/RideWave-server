@@ -25,7 +25,6 @@ class BookingRepository{
                 status:'completed'
             }
        })
-       console.log("complete in ",complete)
        return complete
     }
     async confirmRide(rideId,ridderId){
@@ -34,7 +33,6 @@ class BookingRepository{
             ridderId:ridderId
         }
        })
-       console.log("confirm in ",confirm)
        return confirm
     }
     async getById(bookingId){
@@ -64,12 +62,18 @@ class BookingRepository{
     }
 
     async updateRatting(ratting,bookingId){
-        const result=await BookingSchema.updateOne({_id:bookingId},{
-            $set:{
-                ratting:ratting
-            }
-        })
-        return result
+        const Booking=await BookingSchema.findOne({_id:bookingId})
+        console.log(Booking)
+        //const newAvgRatting=(Booking.AverageRatting.totalRatting+ratting)/(Booking.AverageRatting.count+1)
+        // const result=await BookingSchema.updateOne({_id:bookingId},{
+        //     $set:{
+        //         AverageRatting:{
+        //             totalRatting:newAvgRatting,
+        //             count:Booking.AverageRatting.count+1
+        //         }
+        //     }
+        // })
+        // return result
     }
 }
 

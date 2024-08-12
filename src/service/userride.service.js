@@ -120,8 +120,18 @@ class UserRideService{
                 }
             }
         }
+        const Booking=await BookingRepository.getById(payload.bookingId)
+        // if(Booking.status!='active'){
+        //     return {
+        //         status:400,
+        //         data:{},
+        //         err:{
+        //             message:"This ride is not active to complete"
+        //         }
+        //     }
+        // }
         await BookingRepository.completeRide(payload.bookingId)
-        //await RidderRepository.updateTotalRides(booking.ridderId)
+        await RidderRepository.updateTotalRides(Booking.ridderId)
         await sendRideCompletionMessage(booking.userId,payload.bookingId)
         return {
             status:200,
@@ -145,9 +155,26 @@ class UserRideService{
         }
     }
 
-    async Ratting(bookingId,userId,ratting){
+    async Ratting(bookingId,riderId,ratting){
         ratting=parseFloat(ratting)
-        const result=await BookingRepository.updateRatting(ratting,bookingId)
+        const Booking=await BookingRepository.getById(bookingId)
+        if(Booking.status!='completed'){
+            return {
+                status:400,
+                data:{},
+                err:{
+                    message:"Ride is not completed"
+                }
+            }
+        }
+        const result=await RidderRepository.updateRatting(ratting,riderId)
+        return {
+            status:200,
+            data:{
+                message:"Ratting succesfully"
+            },
+            err:null
+        }
     }
 
 }

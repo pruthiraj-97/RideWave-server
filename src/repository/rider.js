@@ -44,8 +44,24 @@ class ridderRepository{
     async updateTotalRides(riderId){
         const result=await RidderSchema.updateMany({_id:riderId},{
            $inc:{
-            ratting:1
+            totalRides:1
            }
+        })
+        console.log("data",result)
+        return result
+    }
+    async updateRatting(ratting,riderId){
+        const Booking=await RidderSchema.findOne({_id:riderId})
+        const count=Booking.AverageRatting.count
+        const AvgRatting=Booking.AverageRatting.totalRatting
+        const newAvgRatting=(AvgRatting*count+ratting)/(count+1)
+        const result=await RidderSchema.updateOne({_id:riderId},{
+            $set:{
+                AverageRatting:{
+                    totalRatting:newAvgRatting,
+                    count:Booking.AverageRatting.count+1
+                }
+            }
         })
         return result
     }

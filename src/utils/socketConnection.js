@@ -1,6 +1,6 @@
 const express=require('express')
 const { Server }=require('socket.io')
-const { setUserSocketId }=require('../redis/setData')
+const { setUserSocketId ,removeSocket}=require('../redis/setData')
 const { createServer } = require('node:http');
 const app=express()
 const server=createServer(app)
@@ -25,8 +25,9 @@ function initializeSocket() {
       console.log(msg);
     });
 
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
+    socket.on('disconnect', async () => {
+      const result=await removeSocket(userId)
+      console.log("Disconnected ",result)
     });
   });
   return io;

@@ -60,4 +60,5 @@ const isRider=(req,res,next)=>{
     }
 }
 
+
 module.exports={isUserAuthenticate,isRider}

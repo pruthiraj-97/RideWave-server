@@ -27,8 +27,14 @@ const riderSchema=mongoose.Schema({
         default:false
     },
     AverageRatting:{
-        type:Number,
-        default:0
+        totalRatting:{
+            type:Number,
+            default:0
+        },
+        count:{
+            type:Number,
+            default:0
+        }
     },
     totalRides:{
         type:Number,

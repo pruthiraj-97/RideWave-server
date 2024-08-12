@@ -52,10 +52,6 @@ const bookingSchema=mongoose.Schema({
         type:String,
         enum:['pending','active','completed','cancel'],
         default:'pending'
-    },
-    ratting:{
-        type:Number,
-        default:0
     }
 
 },{timestamps:true})

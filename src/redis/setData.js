@@ -53,6 +53,13 @@ const setUserSocketId=async (socketId,userId)=>{
     console.log(result)
 }
 
+const removeSocket=async (userId)=>{
+   const socket=await redis_client.get(userId)
+   console.log("socket is ",socket)
+   const result=await redis_client.del(userId)
+   return result
+}
+
 const setRidderActivate=async (ridderId)=>{
     const result=await redis_client.sAdd('active_riders',ridderId)
 }
@@ -71,5 +78,6 @@ module.exports={
     setCarLocation,
     setUserSocketId,
     setRidderActivate,
-    trackRide
+    trackRide,
+    removeSocket
 }

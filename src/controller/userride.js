@@ -154,9 +154,9 @@ async function completeRide(req,res){
 async function gaveReviewToRider(req,res) {
     try {
         const bookingId=req.params.id
-        const userId=req.payload.id
-        const {rating}=req.body
-        if(!rating||!bookingId){
+        const riderId=req.query.riderId
+        const {ratting}=req.body
+        if(!ratting||!bookingId){
             return res.status(400).json({
                 status:400,
                 data:null,
@@ -165,13 +165,14 @@ async function gaveReviewToRider(req,res) {
                 }
             })
         }
-
+        const response=await UserRideService.Ratting(bookingId,riderId,ratting)
+        return res.status(response.status).json(response)
     } catch (error) {
         return res.status(500).json({
             status:500,
             data:{},
             err:{
-                message:"Some think went wrong"
+                message:"Some think went wrong"+error
             }
         })
     }
