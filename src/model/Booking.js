@@ -54,8 +54,8 @@ const bookingSchema=mongoose.Schema({
         default:'pending'
     },
     ratting:{
-        type:mongoose.Types.ObjectId,
-        ref:"ratting"
+        type:Number,
+        default:0
     }
 
 },{timestamps:true})

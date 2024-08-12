@@ -19,12 +19,13 @@ class BookingRepository{
            })
         return newBooking
     }
-    async completeRide(rideId){
-       const complete=await BookingSchema.updateOne({_id:rideId},{
+    async completeRide(bookingId){
+       const complete=await BookingSchema.updateOne({_id:bookingId},{
             $set:{
                 status:'completed'
             }
        })
+       console.log("complete in ",complete)
        return complete
     }
     async confirmRide(rideId,ridderId){
@@ -57,6 +58,15 @@ class BookingRepository{
         const result=await BookingSchema.updateOne({_id:bookingId},{
             $set:{
                 status:'active'
+            }
+        })
+        return result
+    }
+
+    async updateRatting(ratting,bookingId){
+        const result=await BookingSchema.updateOne({_id:bookingId},{
+            $set:{
+                ratting:ratting
             }
         })
         return result

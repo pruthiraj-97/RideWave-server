@@ -97,12 +97,19 @@ class UserRideService{
 
     async completeRide(payload){
         const booking=await BookingRepository.getById(payload.bookingId)
-        let distance=calculateDistance(booking.dropOutLocation,{
+        const dropLocation={
+            longitude:parseFloat(booking.dropOutLocation.coordinates[0]),
+            latitude:parseFloat(booking.dropOutLocation.coordinates[1])
+        }
+        console.log(dropLocation)
+        let distance=calculateDistance(dropLocation,{
             longitude:parseFloat(payload.longitude),
             latitude:parseFloat(payload.latitude)
         })
         // in kn
-        distance=distance*1000 // in meter
+        distance=distance // in meter
+        console.log("distance is ",distance)
+        // HAS TO BE CHECKED
         if(distance>20){
             return {
                 status:400,
@@ -114,8 +121,7 @@ class UserRideService{
             }
         }
         await BookingRepository.completeRide(payload.bookingId)
-        // send real time notification for further ratting the rider
-        await RidderRepository.updateTotalRides(booking.ridderId)
+        //await RidderRepository.updateTotalRides(booking.ridderId)
         await sendRideCompletionMessage(booking.userId,payload.bookingId)
         return {
             status:200,
@@ -137,6 +143,11 @@ class UserRideService{
                 }
             }
         }
+    }
+
+    async Ratting(bookingId,userId,ratting){
+        ratting=parseFloat(ratting)
+        const result=await BookingRepository.updateRatting(ratting,bookingId)
     }
 
 }

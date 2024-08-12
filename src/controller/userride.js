@@ -25,7 +25,6 @@ async function findRidderNear(req,res){
 
 async function connectRider(req,res){
     try {
-        // validation if no rider find near
         const {source,destination,distance,nearRidders}=req.body
         const userId=req.payload.id
         const type=req.query.type
@@ -123,6 +122,7 @@ async function startRide(req,res){
 async function completeRide(req,res){
     try {
          const bookingId=req.params.id
+         console.log(bookingId)
          const {longitude,latitude}=req.body
          if(!longitude || !latitude||!bookingId){
              return res.status(400).json({
@@ -156,18 +156,24 @@ async function gaveReviewToRider(req,res) {
         const bookingId=req.params.id
         const userId=req.payload.id
         const {rating}=req.body
-        if(!rating){
+        if(!rating||!bookingId){
             return res.status(400).json({
                 status:400,
                 data:null,
                 err:{
-                    message:"please provide some ratting"
+                    message:"please provide some ratting and bookingId"
                 }
             })
         }
 
     } catch (error) {
-        
+        return res.status(500).json({
+            status:500,
+            data:{},
+            err:{
+                message:"Some think went wrong"
+            }
+        })
     }
 }
 

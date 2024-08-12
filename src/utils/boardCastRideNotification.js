@@ -50,15 +50,19 @@ async function trackRideLocation(payload){
     }
 }
 
-async function sendRideCompletionMessage(userId){
+async function sendRideCompletionMessage(userId,bookingId){
+  console.log("THIS IS DATA",userId,bookingId)
   const { getIO } = require('../utils/socketConnection');
   const io = getIO();
   if(!io){
     console.log("io is not initialized")
     return 
   }
-  const socketId=await getSocketId(userId,bookingId)
+  const objectIdString = userId.toString();
+  const socketId=await getSocketId(objectIdString)
+  console.log("object id ",objectIdString)
   if(socketId){
+    console.log("socketId is ",socketId)
     io.to(socketId).emit(`RideCompletion:${bookingId}`,{
       message:"Your ride is completed , Thank you"
     })
