@@ -38,7 +38,6 @@ const setCarLocation=async (type,longitude,latitude,ridderId)=>{
         latitude: latitude,
         member: ridderId
     })
-    console.log(data)
     const payload={
         id:ridderId,
         longitude:longitude,
@@ -50,18 +49,17 @@ const setCarLocation=async (type,longitude,latitude,ridderId)=>{
 
 const setUserSocketId=async (socketId,userId)=>{
     const result=await redis_client.set(userId,socketId)
-    console.log(result)
+    return result
 }
 
 const removeSocket=async (userId)=>{
-   const socket=await redis_client.get(userId)
-   console.log("socket is ",socket)
    const result=await redis_client.del(userId)
    return result
 }
 
 const setRidderActivate=async (ridderId)=>{
     const result=await redis_client.sAdd('active_riders',ridderId)
+    return result
 }
 
 const trackRide=async (payload)=>{
@@ -70,6 +68,7 @@ const trackRide=async (payload)=>{
         latitude:parseFloat(payload.latitude),
         member:payload.bookingId
     })
+    return result
 }
 
 module.exports={

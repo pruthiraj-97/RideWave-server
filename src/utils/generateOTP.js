@@ -6,8 +6,6 @@ const generateotp=async ()=>{
    return rideOtp
 }
 
-generateotp()
-
 module.exports={
     generateotp
 }

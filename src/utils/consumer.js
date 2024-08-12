@@ -39,15 +39,16 @@ const consumeForRideConfirmation=async (channel)=>{
       const payload=requiredData.payload
       boardCastnewRide(payload,newBooking)
     
-    //  setTimeout(async ()=>{
-    //      const checkRide=await BookingRepository.getById(newBooking._id)
-    //      const message=await BookingRepository.deleteBooking(newBooking._id)
-    //      console.log(message,newBooking._id)
-    //      if(!checkRide.ridderId){
-    //         await sendRequestForRideDelay(newBooking._id)
-    //      }
-    //  },1*60*10000)
-    //   channel.ack(data)
+     setTimeout(async ()=>{
+         const checkRide=await BookingRepository.getById(newBooking._id)
+         const message=await BookingRepository.deleteBooking(newBooking._id)
+         console.log(message,newBooking._id)
+         if(!checkRide.ridderId){
+            await sendRequestForRideDelay(newBooking._id)
+         }
+     },1*60*10000)
+     
+      channel.ack(data)
    })
 }
 
@@ -59,7 +60,6 @@ const consumeForTrackingRide=async (channel)=>{
     channel.bindQueue(applicationQueue.queue,MESSAGE_EXCHANGER,BINDING_KEY_TRACKING)
     channel.consume(applicationQueue.queue,(data)=>{
         const payload=JSON.parse(data.content.toString())
-        console.log(payload)
         trackRideLocation(payload)
         channel.ack(data)
     })

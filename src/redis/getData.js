@@ -1,7 +1,6 @@
 const redis_client=require('../config/redis')
 const getSocketId=async (userId)=>{
     const socketid=await redis_client.get(userId)
-    console.log(socketid)
     return socketid
 }
 
@@ -25,7 +24,6 @@ const getRidders=async (point,distance,type)=>{
        const nearRider = await Promise.all(
         Ridders.map(async (elem) => {
             const isActive=await redis_client.sIsMember('active_riders',elem)
-            console.log(isActive,elem)
             if(isActive){
             const coordinate = await redis_client.geoPos(`${key_type}`, elem);
             if (coordinate && coordinate[0]) {

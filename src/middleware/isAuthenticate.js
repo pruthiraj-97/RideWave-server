@@ -29,7 +29,7 @@ const isUserAuthenticate=async (req,res,next)=>{
             status:500,
             data:null,
             err:{
-                message:"some thing went wrong"+error
+                message:"some thing went wrong "+error
             }
         })
     }
@@ -54,7 +54,7 @@ const isRider=(req,res,next)=>{
             status:500,
             data:null,
             err:{
-                message:"some thing went wrong"+error
+                message:"some thing went wrong "+error
             }
         })
     }

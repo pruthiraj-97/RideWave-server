@@ -12,7 +12,6 @@ const { login } = require('./auth.service')
 class UserRideService{
     async searchRidder(point,distance,type) {
         const nearRidders=await getRidders(point,distance,type)
-        console.log(nearRidders)
         const cost=wholePayment(distance)
         return {
             status:200,
@@ -28,7 +27,6 @@ class UserRideService{
         const payment=paymentForRide(type,distance)
         const otp=await generateotp()
         const newBooking=await BookingRepository.create(distance,userId,otp,type,source,destination,payment)
-        // done
         await producerForRideConfirmation(channel,nearRidders,newBooking)
         return {
             status:200,
@@ -40,7 +38,6 @@ class UserRideService{
     }
     async confirmationRequestFromRider(bookingId,ridderId){
         const booking=await BookingRepository.getById(bookingId)
-        console.log(booking)
         if(booking.ridderId){
             return {
                 status:400,
@@ -64,7 +61,6 @@ class UserRideService{
 
     async startRide(otp,bookingId){
         const booking=await BookingRepository.getById(bookingId)
-        console.log(booking)
         if(booking.otp!=otp){
             return {
                 status:400,
@@ -101,7 +97,6 @@ class UserRideService{
             longitude:parseFloat(booking.dropOutLocation.coordinates[0]),
             latitude:parseFloat(booking.dropOutLocation.coordinates[1])
         }
-        console.log(dropLocation)
         let distance=calculateDistance(dropLocation,{
             longitude:parseFloat(payload.longitude),
             latitude:parseFloat(payload.latitude)
@@ -121,15 +116,15 @@ class UserRideService{
             }
         }
         const Booking=await BookingRepository.getById(payload.bookingId)
-        // if(Booking.status!='active'){
-        //     return {
-        //         status:400,
-        //         data:{},
-        //         err:{
-        //             message:"This ride is not active to complete"
-        //         }
-        //     }
-        // }
+        if(Booking.status!='active'){
+            return {
+                status:400,
+                data:{},
+                err:{
+                    message:"This ride is not active to complete"
+                }
+            }
+        }
         await BookingRepository.completeRide(payload.bookingId)
         await RidderRepository.updateTotalRides(Booking.ridderId)
         await sendRideCompletionMessage(booking.userId,payload.bookingId)

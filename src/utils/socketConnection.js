@@ -26,8 +26,7 @@ function initializeSocket() {
     });
 
     socket.on('disconnect', async () => {
-      const result=await removeSocket(userId)
-      console.log("Disconnected ",result)
+      await removeSocket(userId)
     });
   });
   return io;

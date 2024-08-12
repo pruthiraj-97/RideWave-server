@@ -23,8 +23,6 @@ function boardcastlocation(payload){
 if (!io) {
   console.log("io is not initialized");
 } else {
-
-  console.log("socket connected")
   io.emit('rider_location', payload);
 }
 }
@@ -41,11 +39,9 @@ async function trackRideLocation(payload){
     const userSocket=await getSocketId(userId)
     const riderSocket=await getSocketId(riderId)
     if(userSocket){
-      console.log("user socket ",userSocket)
       io.to(userSocket).emit(`TrackRide:${payload.bookingId}`,payload)
     }
     if(riderSocket){
-      console.log("rider socket ",riderSocket)
       io.to(riderSocket).emit(`TrackRide:${payload.bookingId}`,payload)
     }
 }
@@ -60,9 +56,7 @@ async function sendRideCompletionMessage(userId,bookingId){
   }
   const objectIdString = userId.toString();
   const socketId=await getSocketId(objectIdString)
-  console.log("object id ",objectIdString)
   if(socketId){
-    console.log("socketId is ",socketId)
     io.to(socketId).emit(`RideCompletion:${bookingId}`,{
       message:"Your ride is completed , Thank you"
     })

@@ -60,21 +60,6 @@ class BookingRepository{
         })
         return result
     }
-
-    async updateRatting(ratting,bookingId){
-        const Booking=await BookingSchema.findOne({_id:bookingId})
-        console.log(Booking)
-        //const newAvgRatting=(Booking.AverageRatting.totalRatting+ratting)/(Booking.AverageRatting.count+1)
-        // const result=await BookingSchema.updateOne({_id:bookingId},{
-        //     $set:{
-        //         AverageRatting:{
-        //             totalRatting:newAvgRatting,
-        //             count:Booking.AverageRatting.count+1
-        //         }
-        //     }
-        // })
-        // return result
-    }
 }
 
 module.exports= new BookingRepository()

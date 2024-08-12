@@ -36,6 +36,7 @@ const initializeRabbitmq=async ()=>{
         await consumeForTrackingRide(channel)
     } catch (error) {
         console.log("error in rabbitmq",error)
+        process.exit(1)
     }
 }
 server.listen(PORT,async ()=>{
@@ -44,5 +45,3 @@ server.listen(PORT,async ()=>{
     await initializeRabbitmq()
     await connectDB()
 })
-
-module.exports = { initializeSocket, get io() { return io; } };

@@ -63,7 +63,7 @@ async function loginRidder(req,res){
 
 async function updateLocation(req,res){
     try {
-        // rider is activate or not can be cheked in frontend
+        // * rider is activate or not can be cheked in frontend *
         const ridderId=req.params.id
         const { type } = req.query;
         const { latitude, longitude } = req.body;
@@ -83,7 +83,6 @@ async function updateLocation(req,res){
             longitude:parseFloat(longitude),
             ridderId
         }
-        // update for only activate rider
         const channel =req.app.get('rabbitmq_channel');
         const response=await RidderService.updateLocation(channel,payload)
         return res.status(response.status).json(response)
