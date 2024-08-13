@@ -94,22 +94,166 @@ This will run the server on the configured port, and the application will be acc
 
 ### 1. **User Registration and Authentication**
 
-- **POST /api/register:** Register a new user.
-- **POST /api/login:** Authenticate and return a JWT token.
+- **POST /api/auth/user/signup:** Register a new user.
+Request Data
+{
+    "username":"username",
+    "email":"user email",
+    "password":"user password",
+    "contactNumber":"user contactNumber"
+}
+success Response Data
+{
+    status:200,
+    data:{
+        user:{username,email,contactNumber,_id}
+    }
+}
 
-### 2. **Ride Management**
+- **POST /api/auth/user/login:** Authenticate using JWT token and cookies.
+Request data{
+   "email":"user email",
+   "password":"user password"
+}
 
-- **POST /api/rides:** Create a new ride request.
-- **GET /api/rides/:id:** Get ride details by ID.
-- **PATCH /api/rides/:id:** Update ride status.
+success Response
+{
+    status:200,
+    data:{message:"user login succesfully"}
+}
 
-### 3. **Location Updates**
+### 2. **User Registration and Authentication**
 
-- **POST /api/rides/:id/location:** Update ride location in real time.
+- **POST /api/auth/rider/register:** Register a new rider.
+Request Data
+{
+    "username":"username",
+    "email":"user email",
+    "password":"user password",
+    "contactNumber":"user contactNumber",
+    "ridderType":"Rider type" ['auto','go','moto']
+}
+success Response Data
+{
+    status:200,
+    data:{
+        user:{username,email,contactNumber,_id,ridderType}
+    }
+}
 
-### 4. **Driver and Rider Matching**
+- **POST /api/auth/rider/login:** Authenticate using JWT token and cookies.
+Request data{
+   "email":"user email",
+   "password":"user password"
+}
 
-- **POST /api/match:** Match riders with nearby drivers.
+success Response
+{
+    status:200,
+    data:{message:"user login succesfully"}
+}
+
+### 3. **Rider Management**
+
+- **POST /api/ride/updatelocation:id?type=type :** update location of rider and boardCast to users.
+
+Request data
+id :- riderId
+type :- query ['go','auto','moto']
+{
+   "latitude":"location latitude",
+   "longitude":"location longitude"
+}
+
+- **PUT /api/rider/activate:id:** Activate the rider and also set location in DB
+
+Request Data
+id :- rider id
+type :- query ['go','auto','moto']
+{
+    "longitude" ;"rider longitude",
+    "latitude":"rider latitude"
+}
+
+success Response 
+{
+    status:200,
+        data:{
+            message:"ridder activated successfully",
+        },
+    error:null
+}
+
+
+- **PUT /api/rider/deactivate:id?type=type :** Deactivate rider
+Request Data
+id :- riderId
+type=riderType
+
+Response Data
+{
+     status:200,
+        data:{
+            message:"ridder deactivated successfully",
+        },
+    error:null
+}
+
+
+### 4. **users Ride Management**
+
+- **GET /api/userride/findrider?type=type:** Match riders with nearby drivers.
+type is optional is not given by default auto
+
+Request Data
+
+{
+   source:{latitude:longitude},
+   destination:{latitude:longitude}
+}
+
+success Response
+
+{
+    status:200,
+        data:{
+            nearRidders,        # About NearRide is Array [{riderId,longitude,latitude,type},....]
+            cost,          #About cost is Array [{type:cost},....]
+            distance 
+        },
+    err:null
+}
+
+- **GET /api/userride/connectrider?type=type:** Send request for new ride to valid rider
+type :- rider type
+
+{
+    source:{latitude,longitude}
+    destination:{latitude,longitude},
+    distance,
+    nearRidders
+}
+
+success Response  # further Real time notication through websocket if rider accept the request 
+{
+    status:200,
+        data:{
+            message:"Your request has be send please wait to connect you rider"
+        },
+    err:null
+}
+
+- **POST /api/userride/acceptride/:id** Accept by rider if it is in time and in pending state
+id :- booking Id
+
+success Response 
+{
+    status:200,
+        data:{
+            newRide # New ride details will send to rider and user in real time
+        },
+    err:null
+}
 
 ## WebSocket Events
 

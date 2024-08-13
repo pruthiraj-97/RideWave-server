@@ -63,7 +63,6 @@ async function loginRidder(req,res){
 
 async function updateLocation(req,res){
     try {
-        // * rider is activate or not can be cheked in frontend *
         const ridderId=req.params.id
         const { type } = req.query;
         const { latitude, longitude } = req.body;

@@ -17,7 +17,8 @@ class UserRideService{
             status:200,
             data:{
                 nearRidders,
-                cost:cost
+                cost,
+                distance
             },
             err:null
         }

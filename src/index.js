@@ -18,7 +18,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use('/api/auth/user',authRouter)
 app.use('/api/auth/rider',ridderRouter)
-app.use('/api/ride',rideRouter)
+app.use('/api/rider',rideRouter)
 app.use('/api/userride',userRideRouter)
 
 app.get('rideservice/api/home',(req,res)=>{
