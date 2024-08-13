@@ -83,7 +83,7 @@ To start the application:
 npm start
 ```
 
-This will run the server on the configured port, and the application will be accessible at `http://localhost:5000`.
+This will run the server on the configured port, and the application will be accessible at `http://localhost:3005`.
 
 ## API Documentation
 
