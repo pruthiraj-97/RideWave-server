@@ -38,7 +38,6 @@ const isUserAuthenticate=async (req,res,next)=>{
 const isRider=(req,res,next)=>{
     try {
         const payload=req.payload
-        console.log(payload)
         if(payload.type!="rider"){
             return res.status(403).json({
                 status:402,

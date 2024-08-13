@@ -94,6 +94,7 @@ class UserRideService{
 
     async completeRide(payload){
         const booking=await BookingRepository.getById(payload.bookingId)
+        console.log(booking)
         const dropLocation={
             longitude:parseFloat(booking.dropOutLocation.coordinates[0]),
             latitude:parseFloat(booking.dropOutLocation.coordinates[1])
