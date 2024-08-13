@@ -21,7 +21,7 @@ app.use('/api/auth/rider',ridderRouter)
 app.use('/api/rider',rideRouter)
 app.use('/api/userride',userRideRouter)
 
-app.get('rideservice/api/home',(req,res)=>{
+app.get('/',(req,res)=>{
     return res.status(200).json({
         message:"well come to ridewave server"
     })
