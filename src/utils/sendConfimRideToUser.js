@@ -24,7 +24,7 @@ const sendRequestForRideDelay=async (userId)=>{
     if(!socketId){
         return
     }
-    io.to(socketId).emit(`rideRequestTimeout${userId}`,{
+    io.to(socketId).emit(`rideRequestTimeout`,{
         message:"No response from riders please try again later"
     })
 }

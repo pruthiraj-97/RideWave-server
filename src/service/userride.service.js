@@ -138,19 +138,6 @@ class UserRideService{
         }
     }
 
-    async rattingToRide(payload){
-        const booking=await BookingRepository.getById(payload.bookingId)
-        if(booking.status!='completed'){
-            return {
-                status:400,
-                data:null,
-                err:{
-                    message:"Ride is not completed"
-                }
-            }
-        }
-    }
-
     async Ratting(bookingId,riderId,ratting){
         ratting=parseFloat(ratting)
         const Booking=await BookingRepository.getById(bookingId)
@@ -167,9 +154,29 @@ class UserRideService{
         return {
             status:200,
             data:{
-                message:"Ratting succesfully"
+                message:"Ratted succesfully"
             },
             err:null
+        }
+    }
+
+    async startTraking(bookingId){
+        const Booking=await BookingRepository.getById(bookingId)
+        if(Booking.status!='active'){
+            return {
+                status:400,
+                data:{},
+                err:{
+                    message:"Ride is not active"
+                }
+            }
+        }
+        return {
+            status:200,
+            data:{
+                newRide:Booking
+            },
+            error:null
         }
     }
 

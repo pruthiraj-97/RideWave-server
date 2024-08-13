@@ -209,6 +209,22 @@ async function gaveReviewToRider(req,res) {
     }
 }
 
+async function startTrackingTheRide(req,res){
+    try {
+        const bookingId=req.params.id
+        const response=await UserRideService.startTraking(bookingId)
+        return res.status(response.status).json(response)
+    } catch (error) {
+        res.status(500).json({
+            status:500,
+            data:{},
+            error:{
+                message :"Some think went wrong "+error
+            }
+        })
+    }
+}
+
 module.exports={
     findRidderNear,
     connectRider,
@@ -216,5 +232,6 @@ module.exports={
     startRide,
     trackRide,
     completeRide,
-    gaveReviewToRider
+    gaveReviewToRider,
+    startTrackingTheRide
 }
