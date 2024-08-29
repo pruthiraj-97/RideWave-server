@@ -7,8 +7,6 @@ RUN apt-get install -y nodejs
 
 
 COPY . .
-COPY package.json package.json
-COPY package-lock.json package-lock.json
 RUN npm install
 EXPOSE 3005
 CMD ["node","./src/index.js"]

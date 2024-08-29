@@ -63,8 +63,8 @@ RideWave is structured to handle high traffic and real-time operations. Here’s
    Ensure Docker is installed and running on your machine. Pull the pre-built Docker image and run the container:
 
    ```bash
-   docker pull pruthiraj/ridewave
-   docker run -d -p 3005:3005 --name ridewave pruthiraj/ridewave
+   docker pull pruthiraj/uber-server
+   docker run -d -p 3005:3005 --name ridewave pruthiraj/uber-server
    ```
 
    This will pull the Docker image from Docker Hub and run the application, exposing it on the configured ports.
@@ -83,7 +83,7 @@ To start the application:
 npm start
 ```
 
-This will run the server on the configured port, and the application will be accessible at `http://localhost:5000`.
+This will run the server on the configured port, and the application will be accessible at `http://localhost:3005`.
 
 ## API Documentation
 
